@@ -11,12 +11,13 @@ module Raft
 # State Machine Safety:
 #   if a server has applied a log entry at a given index to its state machine, no other server will ever apply a different log entry for the same index.
   class Node
-    attr_reader :type
+    attr_reader :type, :heartbeat_timeout
 
     def initialize()
       rules = { :follower => :FOLLOWER, :candidate => :CANDIDATE, :leader => :LEADER }
 
       @type = rules[:follower]
+      @heartbeat_timeout = rand(150..300)
     end
   end
 end
