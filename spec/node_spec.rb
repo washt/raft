@@ -5,7 +5,7 @@ describe Raft::Node do
     let(:node) { Raft::Node.new }
 
     it 'should be in a follower state' do
-      expect(node.type).to eq 'FOLLOWER'
+      expect(node.type).to eq :FOLLOWER
     end
   end
 end
