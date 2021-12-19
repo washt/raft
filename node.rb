@@ -20,7 +20,7 @@ module Raft
     # a candidate becomes a leader if it gets the majority of node votes, called Leader Election
     attr_reader :type, :heartbeat_timeout
 
-    def initialize()
+    def initialize
       rules = { :follower => :FOLLOWER, :candidate => :CANDIDATE, :leader => :LEADER }
 
       @type = rules[:follower]
