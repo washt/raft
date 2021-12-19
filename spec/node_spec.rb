@@ -1,7 +1,11 @@
 require "spec_helper"
 
 describe Raft::Node do
-  it 'exists' do
-    expect(Raft::Node.new.class).to be(Raft::Node)
+  context 'when the node is initialized' do
+    let(:node) { Raft::Node.new }
+
+    it 'should be in a follower state' do
+      expect(node.type).to eq 'FOLLOWER'
+    end
   end
 end
