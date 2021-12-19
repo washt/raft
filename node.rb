@@ -11,6 +11,13 @@ module Raft
 # State Machine Safety:
 #   if a server has applied a log entry at a given index to its state machine, no other server will ever apply a different log entry for the same index.
   class Node
+    # think of a node as a database that stores a single value
+    # clients can send values to this server
+    # a node can be in one of three states: leader, follower, or candidate
+    # all nodes initialize in a follower state
+    # if followers don't hear from a leader they can become a candidate
+    # a candidate requests votes from other nodes, and they reply with their vote
+    # a candidate becomes a leader if it gets the majority of node votes, called Leader Election
     attr_reader :type, :heartbeat_timeout
 
     def initialize()
