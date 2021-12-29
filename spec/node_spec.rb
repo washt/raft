@@ -9,9 +9,13 @@ describe Raft::Node do
     end
 
     it 'should initialize with a heartbeat timeout between 150ms and 300ms' do
-      expect(node.heartbeat_timeout.class).to be Integer
-      expect(node.heartbeat_timeout).to be >= 150
-      expect(node.heartbeat_timeout).to be <= 300
+      expect(node.heartbeat_timeout.class).to be Float
+      expect(node.heartbeat_timeout).to be >= 0.15
+      expect(node.heartbeat_timeout).to be <= 0.3
+    end
+
+    it 'should initialize with a heatbeat timer' do
+      expect(node.heartbeat_start).to be < Time.now
     end
   end
 end

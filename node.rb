@@ -18,13 +18,19 @@ module Raft
     # if followers don't hear from a leader they can become a candidate
     # a candidate requests votes from other nodes, and they reply with their vote
     # a candidate becomes a leader if it gets the majority of node votes, called Leader Election
-    attr_reader :type, :heartbeat_timeout
+    attr_reader :type, :heartbeat_start, :heartbeat_timeout
 
     def initialize
-      rules = { :follower => :FOLLOWER, :candidate => :CANDIDATE, :leader => :LEADER }
+      @rules = { :follower => :FOLLOWER, :candidate => :CANDIDATE, :leader => :LEADER }
 
-      @type = rules[:follower]
-      @heartbeat_timeout = rand(150..300)
+      @type = @rules[:follower]
+      @heartbeat_start = Time.now
+      @heartbeat_timeout = rand(150..300) * 0.001 # ms -> seconds
+    end
+
+    def timed_out?
+      elapsed = Time.now - @heartbeat_start
+      elapsed > @heartbeat_timeout
     end
   end
 end
