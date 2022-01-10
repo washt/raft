@@ -15,7 +15,12 @@ describe Raft::Node do
     end
 
     it 'should initialize with a heatbeat timer' do
-      expect(node.heartbeat_start).to be < Time.now
+      expect(node.heartbeat_start.class).to be Time
+    end
+
+    it 'should initialize with a commitIndex and lastApplied indeces to 0' do
+      expect(node.commit_index).to be 0
+      expect(node.last_applied).to be 0
     end
   end
 end
