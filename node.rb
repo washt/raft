@@ -1,15 +1,55 @@
 module Raft
+# Raft provides the following guarantees
+# Election Safety:
+#   at most one leader can be elected in a given term.
+# Leader Append-Only:
+#   a leader never overwrites or deletes entries in its log; it only appends new entries.
+# Log Matching:
+#   if two logs contain an entry with the same index and term, then the logs are identical in all entries up through the given index.
+# Leader Completeness:
+#   if a log entry is committed in a given term, then that entry will be present in the logs of the leaders for all higher-numbered terms.
+# State Machine Safety:
+#   if a server has applied a log entry at a given index to its state machine, no other server will ever apply a different log entry for the same index.
   class Node
-    # Raft provides the following guarantees
-    # Election Safety:
-    #   at most one leader can be elected in a given term.
-    # Leader Append-Only:
-    #   a leader never overwrites or deletes entries in its log; it only appends new entries.
-    # Log Matching:
-    #   if two logs contain an entry with the same index and term, then the logs are identical in all entries up through the given index.
-    # Leader Completeness:
-    #   if a log entry is committed in a given term, then that entry will be present in the logs of the leaders for all higher-numbered terms.
-    # State Machine Safety:
-    #   if a server has applied a log entry at a given index to its state machine, no other server will ever apply a different log entry for the same index.
+    # think of a node as a database that stores a single value
+    # clients can send values to this server
+    # a node can be in one of three states: leader, follower, or candidate
+    # all nodes initialize in a follower state
+    # if followers don't hear from a leader they can become a candidate
+    # a candidate requests votes from other nodes, and they reply with their vote
+    # a candidate becomes a leader if it gets the majority of node votes, called Leader Election
+    attr_reader :commit_index, :last_applied, :type, :heartbeat_start, :heartbeat_timeout
+
+    def initialize
+      @rules = { :follower => :FOLLOWER, :candidate => :CANDIDATE, :leader => :LEADER }
+
+      @commit_index = 0
+      @last_applied = 0
+      @type = @rules[:follower]
+      @heartbeat_start = Time.now
+      @heartbeat_timeout = rand_timeout
+    end
+
+    def run
+      while not timed_out?
+        #
+        puts self.type
+      end
+    end
+
+    def timed_out?
+      elapsed = Time.now - @heartbeat_start
+      elapsed > @heartbeat_timeout
+    end
+
+    def rand_timeout
+      rand(150..300) * 0.001 # ms -> seconds
+    end
+
+    private
+
+    def reset_heartbeat
+      @heartbeat_timeout = rand_timeout
+    end
   end
 end
